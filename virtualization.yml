@@ -1,0 +1,23 @@
+- name: setup a virtualization environment
+  hosts: all
+  #connection: local
+  become: yes
+  gather_facts: yes
+  vars:
+    vagrant_version: 2.2.14
+    vagrant_plugins: 
+      #- vagrant-libvirt
+      - vagrant-triggers
+      - vagrant-registration
+  tasks:
+  
+  - yum:
+      name: vagrant gcc libvirt-devel vagrant-libvirt
+      state: installed
+      disable_gpg_check: yes
+      validate_certs: no
+
+  - command: CONFIGURE_ARGS="with-libvirt-include=/usr/include/libvirt with-libvirt-lib=/usr/lib" vagrant plugin install {{ ' '.join(vagrant_plugins) }}
+      
+  #roles:
+    #- role: crivetimihai.virtualization.vagrant

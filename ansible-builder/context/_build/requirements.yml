@@ -1,0 +1,8 @@
+
+roles:
+  - name: linux-system-roles.network
+  - name: stackhpc.libvirt-host
+
+collections:
+  - name: crivetimihai.virtualization
+

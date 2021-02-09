@@ -1,0 +1,42 @@
+---
+
+- name: Ensure that Libvirt is configured
+  hosts: all
+  roles:
+    - role: stackhpc.libvirt-host
+      libvirt_host_pools:
+        - name: default-pool
+          type: dir
+          capacity: 1024
+          path: /opt/libvirt/pool
+          mode: 755
+          owner: mpetrive
+          group: mpetrive
+        - name: lvm-pool
+          type: logical
+          source: vg1
+          #target: /dev/
+          pvs:
+            - /dev/sdb
+        # - name: rbd-pool
+        #   type: rbd
+        #   source: rbd
+        #   hosts:
+        #     - 192.168.42.200
+        #     - 192.168.42.204
+        #     - 192.168.42.208
+        #   username: admin
+        #   passphrase: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+      libvirt_host_networks:
+        - name: br-libvirt
+          mode: bridge
+          bridge: br-libvirt
+        - name: brnat-libvirt
+          mode: nat
+          bridge: brnat-libvirt
+          domain: petro.local
+          ip: 192.168.126.254
+          netmask: 255.255.255.0
+          dhcp_start: 192.168.126.100
+          dhcp_end: 192.168.126.200

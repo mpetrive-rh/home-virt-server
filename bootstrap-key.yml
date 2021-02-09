@@ -1,0 +1,34 @@
+- hosts: all
+  gather_facts: no
+  vars_prompt:
+    - name: bootstrap_password
+      prompt: ssh password
+      private: yes
+  vars:
+    bootstrap_key: "{{ lookup('env','HOME') }}/.ssh/id_rsa.pub"
+    bootstrap_user: mpetrive
+    ansible_become_password: "{{ bootstrap_password }}"
+  tasks:
+  - name: Executes a command and responds to prompts.
+    expect:
+      command: "ssh-copy-id -i {{ bootstrap_key }} {{ bootstrap_user }}@{{ inventory_hostname }}"
+      responses:
+        (.*) password: "{{ bootstrap_password  }}"
+      timeout: 5
+    delegate_to: localhost
+
+  - name: udpate wheel to ensure nopasswd
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%wheel	ALL=(ALL)	ALL'
+      line: '%wheel	ALL=(ALL)	NOPASSWD: ALL'
+      validate: /usr/sbin/visudo -cf %s
+    become: true
+     
+  # - name: Set authorized key for user ubuntu copying it from current user
+  #   authorized_key:
+  #     user: mpetrive
+  #     state: present
+  #     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+      

@@ -1,0 +1,2 @@
+ docker run --rm -e RUNNER_PLAYBOOK=test.yml -t slb_test 
+ docker run --rm --volume=$PWD:/opt/pb -e RUNNER_PLAYBOOK='/opt/pb/hello-world.yml' -t slb_test 

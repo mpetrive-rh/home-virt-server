@@ -1,0 +1,5 @@
+docker  # from collection crivetimihai.virtualization
+mazer  # from collection crivetimihai.virtualization
+setuptools  # from collection crivetimihai.virtualization
+selinux  # from collection crivetimihai.virtualization
+python-vagrant  # from collection crivetimihai.virtualization

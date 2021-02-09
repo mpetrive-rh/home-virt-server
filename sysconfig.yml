@@ -1,0 +1,47 @@
+---
+
+- hosts: all
+  tags: network
+  gather_facts: yes
+  become: true
+  tasks:
+  - command: hostnamectl set-hostname cont.petro.local
+  - import_role:
+      name: "linux-system-roles.network"
+    vars:
+      network_provider: nm
+      network_allow_restart: yes
+      network_connections:
+        - name: eno1
+          type: ethernet
+          autoconnect: yes
+          ip:
+            address:
+              - 192.168.1.120/24
+            dhcp4: no
+            gateway4: 192.168.1.1
+            dns:
+              - 192.168.1.101
+              - 192.168.1.1
+            dns_search:
+            - petro.local
+            auto6: no
+
+        - name: eno1
+          state: down
+        
+        - name: eno1
+          state: up
+ 
+- hosts: all
+  gather_facts: no
+  tasks:
+  - name: update to latest
+    dnf:
+      name: '*'
+      state: latest
+    register: dnf_satus
+
+  - debug:
+      var=dns_status
+
